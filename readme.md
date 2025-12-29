@@ -3,6 +3,7 @@
 Aplikasi berbasis Python untuk melakukan *scraping* (pengambilan data) berita dari berbagai portal berita Indonesia, membersihkan data, mengekstraksi informasi penting (seperti estimasi kerugian, jumlah korban, lokasi), dan memvisualisasikan hasilnya.
 
 Proyek ini dirancang untuk kebutuhan analisis data berita, tugas Business Intelligence (BI), atau pemantauan isu terkini.
+> **⚠️ DISCLAIMER:** > Proyek ini dibuat hanya untuk tujuan **edukasi dan tugas kuliah**. Segala bentuk penyalahgunaan alat ini yang melanggar hukum atau merugikan pihak lain adalah tanggung jawab penuh pengguna. Penulis tidak bertanggung jawab atas dampak penggunaan alat ini. Gunakan dengan bijak dan etis.
 
 ## ✨ Fitur Utama
 
@@ -137,7 +138,6 @@ Data yang dihasilkan (CSV/JSON) akan memiliki kolom-kolom berikut:
 
 * **Rate Limiting**: Program menggunakan `time.sleep(random)` untuk menghindari pemblokiran IP oleh server berita. Jangan menghapus delay ini.
 * **Akurasi Ekstraksi**: Ekstraksi (uang, korban, lokasi) menggunakan Regex dan NLP sederhana. Mungkin tidak 100% akurat untuk kalimat yang kompleks.
-* **Dependency**: Pastikan `utils/cleaning.py` dan `utils/visualize.py` tersedia karena `index.py` sangat bergantung pada modul tersebut.
 
 ## 🤝 Kontribusi
 
@@ -145,4 +145,4 @@ Pull request dipersilakan. Untuk perubahan besar, harap buka *issue* terlebih da
 
 ## 📄 Lisensi
 
-[MIT License](https://www.google.com/search?q=LICENSE) (Sesuaikan dengan lisensi pilihan Anda).
+[MIT License](https://github.com/leemrtnzz/Indonesian-News-Scraper-Analyzer/blob/main/LICENSE).
