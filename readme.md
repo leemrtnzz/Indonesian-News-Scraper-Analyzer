@@ -141,7 +141,7 @@ Data yang dihasilkan (CSV/JSON) akan memiliki kolom-kolom berikut:
 
 ## 🤝 Kontribusi
 
-Pull request dipersilakan. Untuk perubahan besar, harap buka *issue* terlebih dahulu untuk mendiskusikan apa yang ingin Anda ubah.
+Pull request dipersilakan. Untuk perubahan besar, harap buka *issue* terlebih dahulu untuk mendiskusikan apa yang ingin Anda ubah
 
 ## 📄 Lisensi
 
