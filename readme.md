@@ -57,8 +57,8 @@ Pastikan struktur folder proyek Anda seperti berikut agar kode berjalan lancar:
 
 1. **Clone repositori ini** (atau unduh file):
 ```bash
-git clone https://github.com/username/repo-name.git
-cd repo-name
+git clone https://github.com/leemrtnzz/Indonesian-News-Scraper-Analyzer.git
+cd Indonesian-News-Scraper-Analyzer
 
 ```
 
@@ -96,7 +96,7 @@ Setelah program berjalan, Anda akan melihat menu utama:
 
 ### 1. Scraping Berita
 
-* Pilih menu `[1]`.
+* Pilih menu `1`.
 * Masukkan kata kunci/topik yang ingin dicari (bisa lebih dari satu, pisahkan dengan koma).
 * *Contoh:* `banjir demak, gempa cianjur, tanah longsor`
 
@@ -104,15 +104,15 @@ Setelah program berjalan, Anda akan melihat menu utama:
 * Masukkan jumlah artikel yang ingin diambil per topik.
 * Tunggu proses scraping selesai. Data akan otomatis tersimpan di folder `raw_data` dan `clean_data`.
 
-### 2. Konversi JSON ke CSV
+### 2. Konversi JSON ke CSV (opsional)
 
-* Pilih menu `[2]`.
+* Pilih menu `2`.
 * Menu ini berguna jika Anda ingin merapikan ulang atau mengubah file JSON hasil scraping menjadi format CSV yang siap diolah di Excel/Spreadsheet.
 * Program akan mengekstraksi ulang kolom seperti `kecamatan` dan `jumlah_warga` jika belum ada.
 
 ### 3. Visualisasi Data
 
-* Pilih menu `[3]`.
+* Pilih menu `3`.
 * Pilih file JSON yang ada di folder `clean_data`.
 * Pilih jenis grafik yang ingin ditampilkan (WordCloud, Bar Chart, dll).
 
