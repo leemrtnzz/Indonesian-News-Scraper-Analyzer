@@ -1,9 +1,3 @@
-Tentu, ini adalah draf **README.md** yang profesional dan terstruktur, disesuaikan dengan kode `index.py` dan `requirements.txt` yang kamu berikan.
-
-Readme ini mencakup deskripsi proyek, fitur, cara instalasi, struktur folder, dan cara penggunaan.
-
----
-
 # 📰 Indonesian News Scraper & Analyzer
 
 Aplikasi berbasis Python untuk melakukan *scraping* (pengambilan data) berita dari berbagai portal berita Indonesia, membersihkan data, mengekstraksi informasi penting (seperti estimasi kerugian, jumlah korban, lokasi), dan memvisualisasikan hasilnya.
