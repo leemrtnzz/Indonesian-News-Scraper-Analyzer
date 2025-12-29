@@ -1,4 +1,0 @@
-verify_fix.py
-.gitignore
-__pycache__/
-utils/__pycache__/
