@@ -111,18 +111,78 @@ def extract_financial_loss(text):
     """
     Ekstraksi entitas estimasi kerugian (Rupiah).
     Mencari pola: Rp X Triliun/Miliar/Juta.
+    MENGABAIKAN jika konteksnya adalah DONASI/BANTUAN.
     """
     if not text:
         return ""
-    # Pola: Rp <angka> <satuan> (misal: Rp 20 Miliar, Rp 1.5 Triliun)
-    # Gunakan \s* untuk menangani spasi
-    pattern = r"(?:Rp\.?|Rupiah)\s*([\d\.,]+)\s*(Triliun|Miliar|Juta|Ribu)"
-    matches = re.findall(pattern, text, re.IGNORECASE)
     
-    if matches:
-        # Ambil yang nilainya paling besar atau yang pertama ditemukan (heuristic)
-        # Format output string: "20 Miliar"
-        return f"{matches[0][0]} {matches[0][1]}"
+    # 1. Definisi Pola Angka & Satuan (Support singkatan M, T, Jt)
+    #    Contoh: Rp 10,3 M, Rp 100 Juta, 1.5 Triliun
+    number_pattern = r"(?:Rp\.?|Rupiah)\s*([\d\.,]+)\s*(Triliun|Miliar|Juta|Ribu|T|M|Jt|K)"
+    
+    # 2. Definisi Keyword yang MENANDAKAN BANTUAN (Blacklist untuk Kerugian)
+    donation_keywords = [
+        "bantuan", "donasi", "sumbangan", "mengumpulkan", "kumpulkan", 
+        "terkumpul", "galang", "penggalangan", "dana", "menyalurkan", 
+        "salurkan", "alokasi", "anggaran", "biaya", "investasi"
+    ]
+    
+    matches = re.finditer(number_pattern, text, re.IGNORECASE)
+    
+    candidates = []
+    
+    for match in matches:
+        value_str = match.group(0) # Full match "Rp 10 M"
+        start_pos = match.start()
+        
+        # 3. Cek Konteks (misal 50 karakter sebelumnya)
+        context_start = max(0, start_pos - 70)
+        context = text[context_start:start_pos].lower()
+        
+        # Jika ada kata keyword donasi di dekat angka, SKIP (bukan kerugian)
+        if any(keyword in context for keyword in donation_keywords):
+            continue
+            
+        # Jika lolos filter, anggap ini kandidat kerugian
+        candidates.append(f"{match.group(1)} {match.group(2)}")
+        
+    if candidates:
+        # Prioritas: Kalau ada kata "rugi" atau "kerugian" di dekatnya lebih valid,
+        # tapi untuk sekarang kita ambil yang pertama lolos filter donasi.
+        return candidates[0]
+        
+    return ""
+
+def extract_aid(text):
+    """
+    Ekstraksi entitas estimasi BANTUAN/DONASI.
+    Kebalikan dari loss: Hanya ambil jika ada indikasi bantuan.
+    """
+    if not text:
+        return ""
+        
+    number_pattern = r"(?:Rp\.?|Rupiah)\s*([\d\.,]+)\s*(Triliun|Miliar|Juta|Ribu|T|M|Jt|K)"
+    
+    # Keyword yang memvalidasi ini adalah bantuan
+    aid_keywords = [
+        "bantuan", "donasi", "sumbangan", "mengumpulkan", "terkumpul", 
+        "galang", "dana", "menyalurkan", "salurkan", "peduli", "kasih",
+        "menembus", "capai", "mencapai" # Konteks: "Donasi menembus Rp X"
+    ]
+    
+    matches = re.finditer(number_pattern, text, re.IGNORECASE)
+    
+    for match in matches:
+        start_pos = match.start()
+        
+        # Cek Konteks Sebelum (preceding text)
+        context_start = max(0, start_pos - 70)
+        context = text[context_start:start_pos].lower()
+        
+        # Harus ada keyword bantuan
+        if any(keyword in context for keyword in aid_keywords):
+            return f"{match.group(1)} {match.group(2)}"
+            
     return ""
 
 def extract_victim_count(text):

@@ -10,7 +10,7 @@ import random
 import json
 import os
 from datetime import datetime
-from utils.cleaning import clean_author, extract_kecamatan, extract_warga_sipil, clean_date, clean_content, extract_financial_loss, extract_victim_count, get_hashtags
+from utils.cleaning import clean_author, extract_kecamatan, extract_warga_sipil, clean_date, clean_content, extract_financial_loss, extract_victim_count, get_hashtags, extract_aid
 from utils.visualize import (
     plot_topic_distribution, 
     generate_wordcloud, 
@@ -52,7 +52,7 @@ def save_to_csv(data_list, filename):
         df = pd.DataFrame(data_list)
         # Pastikan urutan kolom konsisten
         column_order = ['topik', 'judul', 'konten_berita', 'author', 'tanggal', 
-                       'estimasi_kerugian', 'estimasi_korban', 'jumlah_warga', 'kecamatan', 'tag', 'link']
+                       'estimasi_kerugian', 'estimasi_bantuan', 'estimasi_korban', 'jumlah_warga', 'kecamatan', 'tag', 'link']
         
         # Reorder kolom jika ada
         existing_cols = [col for col in column_order if col in df.columns]
@@ -120,6 +120,7 @@ def scrape_topic(topic, limit=TARGET_JUMLAH_ARTIKEL):
                     cleaned_date = clean_date(article.publish_date)
                     
                     estimasi_rugi = extract_financial_loss(cleaned_content)
+                    estimasi_bantuan = extract_aid(cleaned_content)
                     estimasi_korban = extract_victim_count(cleaned_content)
                     kecamatan_found = extract_kecamatan(cleaned_content)
                     warga_found = extract_warga_sipil(cleaned_content)
@@ -133,6 +134,7 @@ def scrape_topic(topic, limit=TARGET_JUMLAH_ARTIKEL):
                         "author": cleaned_author,
                         "tanggal": cleaned_date,
                         "estimasi_kerugian": estimasi_rugi,
+                        "estimasi_bantuan": estimasi_bantuan,
                         "estimasi_korban": estimasi_korban,
                         "jumlah_warga": warga_found, 
                         "kecamatan": kecamatan_found, 
@@ -140,7 +142,7 @@ def scrape_topic(topic, limit=TARGET_JUMLAH_ARTIKEL):
                         "link": url
                     }
                     collected_data.append(item)
-                    print(f"   -> [OK] {article.title[:30]}... | Rugi:{estimasi_rugi} | Korban:{estimasi_korban} | Warga:{warga_found} | Kec:{kecamatan_found}")
+                    print(f"   -> [OK] {article.title[:30]}... | Rugi:{estimasi_rugi} | Bantuan:{estimasi_bantuan} | Korban:{estimasi_korban} | Kec:{kecamatan_found}")
                     success_count += 1
                     
                 except Exception as e:
@@ -205,20 +207,25 @@ def json_to_csv_converter():
 
         # 2. Ekstraksi Fitur Baru (jika belum ada atau untuk update)
         if 'konten_berita' in df.columns:
-            print("[INFO] Melakukan ekstraksi entitas tambahan (Kecamatan & Warga)...")
+            print("[INFO] Melakukan ekstraksi entitas tambahan (Kecamatan, Warga, Bantuan)...")
             # Pastikan kolom ada, jika belum ada buat baru
             if 'kecamatan' not in df.columns:
                 df['kecamatan'] = ""
             if 'jumlah_warga' not in df.columns:
                 df['jumlah_warga'] = ""
+            if 'estimasi_bantuan' not in df.columns:
+                df['estimasi_bantuan'] = ""
             
             # Apply extraction
             df['kecamatan'] = df['konten_berita'].apply(extract_kecamatan)
             df['jumlah_warga'] = df['konten_berita'].apply(extract_warga_sipil)
+            # Re-run extraction for aid/loss to ensure updates apply to existing json too
+            df['estimasi_bantuan'] = df['konten_berita'].apply(extract_aid)
+            df['estimasi_kerugian'] = df['konten_berita'].apply(extract_financial_loss)
 
         # 3. Reorder Columns agar rapi
         column_order = ['topik', 'judul', 'konten_berita', 'author', 'tanggal', 
-                       'estimasi_kerugian', 'estimasi_korban', 'jumlah_warga', 'kecamatan', 'tag', 'link']
+                       'estimasi_kerugian', 'estimasi_bantuan', 'estimasi_korban', 'jumlah_warga', 'kecamatan', 'tag', 'link']
         
         # Filter kolom yang benar-benar ada di DataFrame
         existing_cols = [col for col in column_order if col in df.columns]
